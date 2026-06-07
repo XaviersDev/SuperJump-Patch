@@ -1,0 +1,14 @@
+[
+  {
+    "modid": "superjumppatch",
+    "name": "SuperJump-Patch",
+    "description": "Мод-патч для мини-игры \"Прятки\" на сервере TeslaCraft, который возвращает старую механику супер-прыжков.",
+    "version": "1.0",
+    "mcversion": "1.12.2",
+    "authorList": ["AlliSighs"],
+    "credits": "",
+    "logoFile": "assets/superjumppatch/icon.png",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
