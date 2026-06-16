@@ -71,33 +71,27 @@ public class PvpGui extends GuiChest {
                 "\u00a77Подсвечивает игрока,",
                 "\u00a77до которого достаешь рукой!");
 
-        set(12, cfg.pvpHitbox ? new ItemStack(Blocks.GLASS) : new ItemStack(Items.SPECTRAL_ARROW), 2,
-                cfg.pvpHitbox ? "\u00a7e\u00a7lРежим: рамка хитбокса" : "\u00a7e\u00a7lРежим: свечение",
-                false,
-                cfg.pvpHitbox ? "\u00a77Цветная рамка вокруг игрока" : "\u00a77Контур-свечение (без цвета)",
-                "\u00a78нажми чтоб переключить");
+        set(12, new ItemStack(Items.DYE, 1, dyeOf(cfg.pvpColor)), 3,
+                "\u00a7e\u00a7lЩас цвет рамки: \u00a7f" + nameOf(cfg.pvpColor), true,
+                "\u00a77Активный цвет хитбокса",
+                "\u00a78нажми чтобы сменить");
 
-        if (cfg.pvpHitbox) {
-            set(14, new ItemStack(Items.DYE, 1, dyeOf(cfg.pvpColor)), 3,
-                    "\u00a7e\u00a7lЩас цвет рамки: \u00a7f" + nameOf(cfg.pvpColor), true,
-                    "\u00a77Активный цвет хитбокса",
-                    "\u00a78нажми чтобы сменить");
-            int[] cells = {19, 20, 21, 22, 23, 24, 25};
-            for (int i = 0; i < COLORS.length && i < 7; i++) {
-                boolean active = cfg.pvpColor == COLORS[i];
-                set(cells[i], new ItemStack(Items.DYE, 1, DYE[i]), 100 + i,
-                        (active ? "\u00a7a\u00a7l" : "\u00a77") + NAMES[i], active,
-                        active ? "\u00a7aвыбран" : "\u00a78нажми чтоб выбрать");
-                colorSlot.put(cells[i], i);
-            }
-        } else {
-            set(14, new ItemStack(Blocks.BARRIER), 0,
-                    "\u00a78Цвет токо для хитбокса", false,
-                    "\u00a77Переключи режим на хитбокс,",
-                    "\u00a77чтоб выбрать цвет");
+        int[] cells = {19, 20, 21, 22, 23, 24, 25};
+        for (int i = 0; i < COLORS.length && i < 7; i++) {
+            boolean active = cfg.pvpColor == COLORS[i];
+            set(cells[i], new ItemStack(Items.DYE, 1, DYE[i]), 100 + i,
+                    (active ? "\u00a7a\u00a7l" : "\u00a77") + NAMES[i], active,
+                    active ? "\u00a7aвыбран" : "\u00a78нажми чтоб выбрать");
+            colorSlot.put(cells[i], i);
         }
 
-        set(22, new ItemStack(Items.ARROW), 200, "\u00a7e\u00a7l\u00ab Назад", false);
+        set(16, new ItemStack(cfg.pvpArrows ? Items.SPECTRAL_ARROW : Items.STICK), 4,
+                cfg.pvpArrows ? "\u00a7e\u00a7lСтиль: стрелки" : "\u00a7e\u00a7lСтиль: рамка",
+                cfg.pvpArrows,
+                cfg.pvpArrows ? "\u00a77Анимированные стрелки над головой" : "\u00a77Рамка вокруг хитбокса",
+                "\u00a78нажми чтоб переключить");
+
+        set(26, new ItemStack(Items.ARROW), 200, "\u00a7e\u00a7l\u00ab Назад", false);
 
         for (int i = 0; i < 27; i++) {
             if (inv.getStackInSlot(i).isEmpty())
@@ -130,7 +124,7 @@ public class PvpGui extends GuiChest {
         int a = actions.get(idx);
         if (a == 200) { cfg.save(); mc.displayGuiScreen(new SjpGui()); return true; }
         if (a == 1) cfg.pvpEsp = !cfg.pvpEsp;
-        else if (a == 2) cfg.pvpHitbox = !cfg.pvpHitbox;
+        else if (a == 4) cfg.pvpArrows = !cfg.pvpArrows;
         else if (a == 3) cfg.pvpColor = nextColor(cfg.pvpColor);
         else if (a >= 100) {
             Integer ci = colorSlot.get(idx);

@@ -27,7 +27,7 @@ public class SjpConfig {
     public boolean antiAfk = false;
 
     public boolean pvpEsp = false;
-    public boolean pvpHitbox = false;
+    public boolean pvpArrows = true;
     public int pvpColor = 0xFF5555;
 
     public boolean trollEnabled = false;
@@ -51,6 +51,26 @@ public class SjpConfig {
     public float hudScale = 1.0f;
 
     public boolean hideNegativeKo = false;
+
+    public boolean autoGg = false;
+    public boolean autoGgRandom = false;        // false = наборы по порядку, true = рандомный набор
+    public int autoGgMinDelay = 600;            // мин. задержка в мс перед первым сообщением
+    public int autoGgMaxDelay = 1400;           // макс. задержка в мс перед первым сообщением
+    public List<String> autoGgMessages = new ArrayList<String>(); // legacy, мигрируется в наборы
+    public List<GgSet> autoGgSets = new ArrayList<GgSet>();
+    public int autoGgSeqIndex = 0;              // позиция в очереди наборов (для режима "по порядку")
+
+    // Набор: до 3 сообщений, отправляются за один раз с шагом 55 мс.
+    public static class GgSet {
+        public String name = "Набор";
+        public boolean randomLine = false;     // false = строки по порядку, true = рандомная строка(и)
+        public List<String> messages = new ArrayList<String>();
+        public GgSet() {}
+        public GgSet(String name) { this.name = name; }
+    }
+
+    public static final int GG_MAX_LINES = 3;
+    public static final int GG_LINE_DELAY_MS = 55; // минимально допустимая на теслакрафте
 
     public int colorTitle = 0x55FFFF;
     public int colorGame = 0xAAAAAA;
@@ -108,6 +128,36 @@ public class SjpConfig {
         if (anchor == null) anchor = "TOP_LEFT";
         if (zoomSpeed <= 0) zoomSpeed = 2.0;
         if (zoomMax < 2) zoomMax = 30.0;
+        if (autoGgMessages == null) autoGgMessages = new ArrayList<String>();
+        if (autoGgSets == null) autoGgSets = new ArrayList<GgSet>();
+        if (autoGgSets.isEmpty()) {
+            // migrate old flat messages, or seed defaults
+            if (!autoGgMessages.isEmpty()) {
+                GgSet s = new GgSet("Мои гг");
+                for (String m : autoGgMessages) {
+                    if (s.messages.size() >= GG_MAX_LINES) break;
+                    s.messages.add(m);
+                }
+                autoGgSets.add(s);
+            } else {
+                GgSet a = new GgSet("Первая, добро");
+                a.messages.add("gg \u2764");
+                a.messages.add("gg wp \u273f");
+                GgSet b = new GgSet("ГГ");
+                b.messages.add("gg");
+                autoGgSets.add(a);
+                autoGgSets.add(b);
+            }
+        }
+        // enforce per-set sanity
+        for (GgSet s : autoGgSets) {
+            if (s.name == null) s.name = "Набор";
+            if (s.messages == null) s.messages = new ArrayList<String>();
+            while (s.messages.size() > GG_MAX_LINES) s.messages.remove(s.messages.size() - 1);
+        }
+        if (autoGgSeqIndex < 0) autoGgSeqIndex = 0;
+        if (autoGgMinDelay < 0) autoGgMinDelay = 600;
+        if (autoGgMaxDelay < autoGgMinDelay) autoGgMaxDelay = autoGgMinDelay + 400;
     }
 
     public boolean isGameOn(String name) {

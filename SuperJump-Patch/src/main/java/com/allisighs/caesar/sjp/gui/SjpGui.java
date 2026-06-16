@@ -177,6 +177,12 @@ public class SjpGui extends GuiChest {
                 "\u00a77Не рисует сущности за стенами",
                 "\u00a77и вне поля зрения",
                 "\u00a78нажмите чтоб настроить");
+        set(31, new ItemStack(Items.NAME_TAG), 32,
+                "\u00a7d\u00a7lАвто-ГГ \u2764", cfg.autoGg,
+                cfg.autoGg ? "\u00a7aВключен" : "\u00a7cВыключен",
+                "\u00a77Сам пишет gg в конце катки на прятках",
+                "\u00a77красивые фразы, очередь, символы",
+                "\u00a78нажми чтоб настроить");
     }
 
     private void buildStats() {
@@ -395,6 +401,7 @@ public class SjpGui extends GuiChest {
             case 28: cfg.save(); mc.displayGuiScreen(new PvpGui()); return true;
             case 29: cfg.save(); mc.displayGuiScreen(new ZoomGui()); return true;
             case 31: cfg.save(); mc.displayGuiScreen(new OptimizeGui()); return true;
+            case 32: cfg.save(); mc.displayGuiScreen(new AutoGgGui()); return true;
             case 30: page = STATS; break;
             case 100: cfg.anchor = anchorMap.get(idx); break;
             case 200:

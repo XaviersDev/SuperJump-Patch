@@ -20,9 +20,11 @@ import com.allisighs.caesar.sjp.config.SjpConfig;
 
 @Mod(modid = CaesarMain.MODID, name = CaesarMain.NAME, version = CaesarMain.VERSION, clientSideOnly = true)
 public class CaesarMain {
+
+	
     public static final String MODID = "caesarmod";
     public static final String NAME = "Teslive Community Hub";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "1.1";
 
     private static final String AXE_NAME = "Топор охотника";
     protected Minecraft mc = Minecraft.getMinecraft();
@@ -45,6 +47,7 @@ public class CaesarMain {
         MinecraftForge.EVENT_BUS.register(new StatHud());
         MinecraftForge.EVENT_BUS.register(new com.allisighs.caesar.sjp.stats.StatChatHandler());
         MinecraftForge.EVENT_BUS.register(new com.allisighs.caesar.sjp.chat.ChatManager());
+        MinecraftForge.EVENT_BUS.register(new com.allisighs.caesar.sjp.chat.AutoGgHandler());
         MinecraftForge.EVENT_BUS.register(new com.allisighs.caesar.sjp.stats.AfkHandler());
         MinecraftForge.EVENT_BUS.register(new com.allisighs.caesar.sjp.pvp.PvpEsp());
         MinecraftForge.EVENT_BUS.register(new com.allisighs.caesar.sjp.pvp.EntityCuller());
