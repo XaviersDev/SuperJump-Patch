@@ -31,9 +31,9 @@ public class PvpEsp {
         return mc.player.getDistance(p) <= REACH + 0.3;
     }
 
-    // Line-of-sight check: only show players the local player can actually see.
-    // Rays are cast to several points on the target; if every ray is blocked by
-    // a solid block, the player is hidden and must NOT be drawn.
+    
+    
+    
     private boolean visible(Minecraft mc, EntityPlayer p, float pt) {
         Vec3d eyes = mc.player.getPositionEyes(pt);
         double ex = p.lastTickPosX + (p.posX - p.lastTickPosX) * pt;
@@ -46,7 +46,7 @@ public class PvpEsp {
                 new Vec3d(ex, ey + h * 0.1, ez),
                 new Vec3d(ex, ey + h * 0.5, ez),
                 new Vec3d(ex, ey + h * 0.9, ez),
-                new Vec3d(ex, ey + h + 0.75, ez), // the point where the arrows sit
+                new Vec3d(ex, ey + h + 0.75, ez), 
                 new Vec3d(ex + w, ey + h * 0.5, ez),
                 new Vec3d(ex - w, ey + h * 0.5, ez),
                 new Vec3d(ex, ey + h * 0.5, ez + w),
@@ -56,10 +56,10 @@ public class PvpEsp {
         for (Vec3d t : targets) {
             RayTraceResult r = mc.world.rayTraceBlocks(eyes, t, false, true, false);
             if (r == null || r.typeOfHit != RayTraceResult.Type.BLOCK) {
-                return true; // at least one point is unobstructed
+                return true; 
             }
         }
-        return false; // every sampled point is behind a block
+        return false; 
     }
 
     @SubscribeEvent
@@ -78,18 +78,18 @@ public class PvpEsp {
         float g = ((cfg.pvpColor >> 8) & 0xFF) / 255f;
         float b = (cfg.pvpColor & 0xFF) / 255f;
 
-        // animation phase from world time + partial ticks
+        
         float t = (mc.world.getTotalWorldTime() + pt);
-        float bob = (float) Math.sin(t * 0.15f) * 0.10f;        // up/down bobbing
-        float pulse = 1.0f + (float) Math.sin(t * 0.25f) * 0.12f; // size pulsing
+        float bob = (float) Math.sin(t * 0.15f) * 0.10f;        
+        float pulse = 1.0f + (float) Math.sin(t * 0.25f) * 0.12f; 
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(-px, -py, -pz);
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
-        // Depth test ON + depth buffer read: everything is occluded by terrain
-        // exactly like normal geometry. Combined with visible(), nothing shows
-        // through walls.
+        
+        
+        
         GlStateManager.enableDepth();
         GlStateManager.depthMask(true);
         GlStateManager.enableBlend();
@@ -121,13 +121,13 @@ public class PvpEsp {
         GlStateManager.popMatrix();
     }
 
-    // Two thick downward chevrons stacked above the head, always facing the
-    // camera (billboard). Drawn as filled quads so they look chunky.
+    
+    
     private void drawArrows(Minecraft mc, double x, double y, double z,
                             float scale, float r, float g, float b) {
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, z);
-        // billboard: cancel the camera yaw/pitch so the arrows always face us
+        
         GlStateManager.rotate(-mc.getRenderManager().playerViewY, 0, 1, 0);
         GlStateManager.rotate(mc.getRenderManager().playerViewX, 1, 0, 0);
         GlStateManager.scale(scale, scale, scale);
@@ -135,15 +135,15 @@ public class PvpEsp {
         Tessellator tess = Tessellator.getInstance();
         BufferBuilder buf = tess.getBuffer();
 
-        // one chevron = two thick legs forming a "v" pointing down.
-        // we draw two of them stacked vertically.
-        float halfW = 0.34f;   // half width of a chevron
-        float legT = 0.16f;    // thickness of each leg (thicker)
-        float drop = 0.26f;    // how far the tip drops below the shoulders
-        float gap = 0.20f;     // tight vertical gap between the two chevrons
+        
+        
+        float halfW = 0.34f;   
+        float legT = 0.16f;    
+        float drop = 0.26f;    
+        float gap = 0.20f;     
 
         for (int i = 0; i < 2; i++) {
-            float topY = -i * gap;            // second arrow sits lower
+            float topY = -i * gap;            
             chevron(buf, tess, halfW, legT, drop, topY, r, g, b);
         }
 
@@ -153,18 +153,18 @@ public class PvpEsp {
     private void chevron(BufferBuilder buf, Tessellator tess,
                          float halfW, float legT, float drop, float topY,
                          float r, float g, float b) {
-        // shoulder points (top of the v) and the tip (bottom center)
+        
         float shoulderY = topY;
         float tipY = topY - drop;
 
-        // left leg: quad from left shoulder down to center tip
+        
         quad(buf, tess,
                 -halfW, shoulderY,
                 -halfW + legT, shoulderY,
                 0f + legT * 0.5f, tipY,
                 0f - legT * 0.5f, tipY,
                 r, g, b);
-        // right leg: mirror
+        
         quad(buf, tess,
                 halfW - legT, shoulderY,
                 halfW, shoulderY,

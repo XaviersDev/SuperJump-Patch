@@ -14,21 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Auto-GG: when a Hide-and-Seek round ends, automatically sends a chosen "set"
- * of gg-style messages — the same lines players already type by hand to earn
- * karma. No gameplay advantage; just chat automation.
- *
- * A set holds up to 3 lines. Lines in a set are sent one after another with a
- * 55 ms gap (the minimum the server allows for three messages). Which set is
- * picked each round follows the global order (sequential / random); the order
- * of lines inside a set follows that set's own rule.
- */
 public class AutoGgHandler {
 
     private final Random rnd = new Random();
 
-    // queue of lines waiting to be sent, each with its own fire time
     private static class Pending {
         long fireAt;
         String text;
@@ -46,7 +35,7 @@ public class AutoGgHandler {
         return pr && win;
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(receiveCanceled = true)
     public void onChat(ClientChatReceivedEvent e) {
         SjpConfig cfg = SjpConfig.get();
         if (!cfg.modEnabled || !cfg.autoGg) return;
@@ -74,7 +63,7 @@ public class AutoGgHandler {
         List<String> lines = orderedLines(set);
         if (lines.isEmpty()) return;
 
-        // initial human-like delay before the first line, then 55 ms steps
+        
         int min = Math.max(0, cfg.autoGgMinDelay);
         int max = Math.max(min + 1, cfg.autoGgMaxDelay);
         long first = now + min + (long) (rnd.nextDouble() * (max - min));
@@ -88,7 +77,7 @@ public class AutoGgHandler {
         }
     }
 
-    // choose which set to use this round, per the global order rule
+    
     private GgSet pickSet(SjpConfig cfg) {
         List<GgSet> sets = cfg.autoGgSets;
         if (sets == null || sets.isEmpty()) return null;
@@ -103,7 +92,7 @@ public class AutoGgHandler {
         }
     }
 
-    // order the lines inside a set per the set's own rule, capped at GG_MAX_LINES
+    
     private List<String> orderedLines(GgSet set) {
         List<String> src = new ArrayList<String>(set.messages);
         if (set.randomLine) Collections.shuffle(src, rnd);
@@ -122,8 +111,8 @@ public class AutoGgHandler {
         if (mc.player == null) { queue.clear(); return; }
 
         long now = System.currentTimeMillis();
-        // send at most enough lines such that consecutive sends stay >= 55 ms
-        // apart on the wall clock, never faster than the server allows
+        
+        
         if (now < queue.peekFirst().fireAt) return;
         if (now - lastSent < SjpConfig.GG_LINE_DELAY_MS) return;
         Pending p = queue.pollFirst();

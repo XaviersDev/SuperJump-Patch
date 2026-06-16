@@ -16,16 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Auto-GG settings.
- *
- * Two views:
- *  SETS  - list of sets ("наборы"), each is a folder of up to 3 lines sent
- *          together. Global on/off, global queue order (sequential/random),
- *          add set, open set, delete set.
- *  EDIT  - edit one set: rename it, toggle its line order, edit/add/delete its
- *          (max 3) lines, with a clickable unicode-symbol keyboard.
- */
 public class AutoGgGui extends GuiScreen {
 
     private final SjpConfig cfg = SjpConfig.get();
